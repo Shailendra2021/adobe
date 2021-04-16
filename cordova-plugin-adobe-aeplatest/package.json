@@ -1,0 +1,70 @@
+{
+  "_from": "git+https://github.com/Shailendra2021/adobe.git",
+  "_id": "cordova-plugin-adobe-aep@0.0.1",
+  "_inBundle": false,
+  "_integrity": "",
+  "_location": "/cordova-plugin-adobe-aep",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "git",
+    "raw": "git+https://github.com/Shailendra2021/adobe.git",
+    "rawSpec": "git+https://github.com/Shailendra2021/adobe.git",
+    "saveSpec": "git+https://github.com/Shailendra2021/adobe.git",
+    "fetchSpec": "https://github.com/Shailendra2021/adobe.git",
+    "gitCommittish": null
+  },
+  "_requiredBy": [
+    "#DEV:/",
+    "#USER"
+  ],
+  "_resolved": "git+https://github.com/Shailendra2021/adobe.git#35daeb38fa18fe1599d72d8363f1bb5e0f164903",
+  "_spec": "git+https://github.com/Shailendra2021/adobe.git",
+  "_where": "/Users/kapilchandel/Desktop/AppFlowWork/tlc-customer-app-inhouse-development",
+  "author": {
+    "name": "Kushal Chandel",
+    "email": "kushalchandel1992@gmail.com"
+  },
+  "bugs": {
+    "url": "https://github.com/Shailendra2021/adobe/issues"
+  },
+  "bundleDependencies": false,
+  "cordova": {
+    "id": "cordova-plugin-adobe-aep",
+    "platforms": [
+      "android",
+      "ios"
+    ]
+  },
+  "deprecated": false,
+  "description": "An Android Cordova plugin that allows users to display simple Toast messages at the bottom of the screen.",
+  "engines": [
+    {
+      "name": "cordova",
+      "version": ">=8.0.0"
+    },
+    {
+      "name": "cordova-android",
+      "version": ">=6.0.0"
+    },
+    {
+      "name": "cordova-ios",
+      "version": ">=4.5.0"
+    }
+  ],
+  "homepage": "https://github.com/Shailendra2021/adobe/",
+  "keywords": [
+    "Adobe Experience Platform Mobile SDKs",
+    "AEP",
+    "SDK",
+    "Adobe",
+    "ecosystem:cordova",
+    "cordova-android"
+  ],
+  "license": "MIT",
+  "name": "cordova-plugin-adobe-aep",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shailendra2021/adobe.git"
+  },
+  "version": "0.0.1"
+}

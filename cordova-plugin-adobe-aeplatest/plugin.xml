@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="cordova-plugin-adobe-aeplatest" version="1.0.4"
+xmlns="http://apache.org/cordova/ns/plugins/1.0"
+xmlns:android="http://schemas.android.com/apk/res/android">
+    <name>AEP Adobe Experience Platform</name>
+    <description>Plugin for Adobe Experience Platform</description>
+    <author>TLC</author>
+
+    <license>MIT</license>
+
+    <engines>
+        <engine name="cordova" version=">=7.1.0" />
+        <engine name="cordova-android" version=">=7.0.0" />
+        <engine name="cordova-ios" version=">=4.5.0" />
+    </engines>
+
+ <js-module src="www/AepPlugin.js" name="AEP">
+	    <clobbers target="AEP"/>
+	</js-module>
+
+    <platform name="android">
+
+     <config-file target="res/xml/config.xml" parent="/*">
+			 <feature name="AEPMobile_PhoneGap">
+				 <param name="android-package" value="com.aep.AEPMobile_PhoneGap" onload="true" />
+				 <param name="onload" value="true" />
+			 </feature>
+		 </config-file>
+
+    <preference name="AEP_VERSION" default="1.+"/>
+    <framework src="com.adobe.marketing.mobile:userprofile:$AEP_VERSION"/>
+    <framework src="com.adobe.marketing.mobile:campaign:$AEP_VERSION"/>
+    <framework src="com.adobe.marketing.mobile:sdk-core:$AEP_VERSION"/>
+    <framework src="com.adobe.marketing.mobile:target:$AEP_VERSION"/>
+    <framework src="com.adobe.marketing.mobile:analytics:$AEP_VERSION"/>
+    <framework src="com.adobe.marketing.mobile:places:$AEP_VERSION"/>
+    <framework src="com.adobe.marketing.mobile:places-monitor:2.+"/>
+    <framework src="com.google.android.gms:play-services-location:16.0.0"/>
+
+     <config-file target="AndroidManifest.xml" parent="/manifest">
+      <uses-permission android:name="android.permission.INTERNET" />
+      <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    </config-file>
+
+    <source-file src="src/android/AEPMobile_PhoneGap.java" target-dir="src/com/aep" />
+    
+    </platform>
+
+    <platform name="ios">
+
+     <config-file target="config.xml" parent="/*">
+			 <feature name="AEPMobile_PhoneGap">
+				 <param name="ios-package" value="AEPMobile_PhoneGap" onload="true" />
+			 </feature>
+		 </config-file>
+  
+       <framework src="ACPUserProfile" type="podspec" spec="~> 2.1"/>
+       <framework src="ACPCore" type="podspec" spec="~> 2.6"/>
+       <framework src="ACPAnalytics" type="podspec" spec="~> 2.2"/>
+       <framework src="ACPCampaign" type="podspec" spec="~> 1.0"/>       
+       <framework src="ACPTarget" type="podspec" spec="~> 2.1"/>  
+       <framework src="ACPPlaces" type="podspec" spec="~> 1.3"/>  
+       <framework src="ACPPlacesMonitor" type="podspec" spec="~> 2.1"/>  
+        <config-file parent="/*" target="config.xml">
+            <feature name="AEPMobile_PhoneGap">
+                <param name="ios-package" value="AEPMobile_PhoneGap"/>
+            </feature>
+        </config-file>
+
+        <header-file src="src/ios/AEPMobile_PhoneGap.h" />
+		<source-file src="src/ios/AEPMobile_PhoneGap.m" />
+        <header-file src="src/ios/AEP-Bridging-Header.h" />
+    </platform>
+</plugin>
