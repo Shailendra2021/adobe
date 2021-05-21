@@ -52,7 +52,7 @@
 NSString *const VisitorId_Id = @"id";
 NSString *const VisitorId_IdType = @"idType";
 NSString *const VisitorId_AuthenticationState = @"authenticationState";
-NSString *const environmentID = @"0b11157d649c/a5066337cdf1/launch-50f50af43544-development";
+NSString * environmentID;
 static NSString * const POI = @"POI";
 static NSString * const LATITUDE = @"Latitude";
 static NSString * const LONGITUDE = @"Longitude";
@@ -67,6 +67,7 @@ static NSString * const EMPTY_ARRAY_STRING = @"[]";
 
 - (void)pluginInitialize {
     [super pluginInitialize];
+     environmentID = [self.commandDelegate.settings objectForKey:[@"environmentIDValue" lowercaseString]];
     [ACPCore setLogLevel:ACPMobileLogLevelDebug];
     [ACPCore configureWithAppId:environmentID];
     [ACPUserProfile registerExtension];

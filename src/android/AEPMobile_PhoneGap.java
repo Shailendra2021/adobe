@@ -66,7 +66,7 @@ public class AEPMobile_PhoneGap extends CordovaPlugin {
     // public Method - all calls filter through this
     // =====================
 
-    String applicationCode = "0b11157d649c/a5066337cdf1/launch-50f50af43544-development";
+    String applicationCode;
     final static String METHOD_PLACESMONITOR_EXTENSION_VERSION_PLACESMONITOR = "extensionVersionMonitor";
     final static String METHOD_PLACESMONITOR_START = "start";
     final static String METHOD_PLACESMONITOR_STOP = "stop";
@@ -933,7 +933,7 @@ public class AEPMobile_PhoneGap extends CordovaPlugin {
 
         MobileCore.setApplication(cordova.getActivity().getApplication());
         MobileCore.setLogLevel(LoggingMode.DEBUG);
-
+        applicationCode = preferences.getString("environmentIDValue", "0b11157d649c/a5066337cdf1/launch-50f50af43544-development");
         try {
             UserProfile.registerExtension();
             Identity.registerExtension();
