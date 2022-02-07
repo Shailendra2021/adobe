@@ -119,7 +119,10 @@ public class AEPMobile_PhoneGap extends CordovaPlugin {
         } else if (action.equals("setPushIdentifier")) {
             this.setPushIdentifier(args, callbackContext);
             return true;
-        } else if (action.equals("getDebugLogging")) {
+        } else if (action.equals("getExperienceCloudId")) {
+            getExperienceCloudId(callbackContext);
+            return true;
+        }else if (action.equals("getDebugLogging")) {
            // this.getDebugLogging(callbackContext);
             return true;
         } else if (action.equals("setDebugLogging")) {
@@ -455,6 +458,20 @@ public class AEPMobile_PhoneGap extends CordovaPlugin {
             }
         });
 
+    }
+
+    private void getExperienceCloudId(final CallbackContext callbackContext) {
+        cordova.getThreadPool().execute(new Runnable() {
+            @Override
+            public void run() {
+                Identity.getExperienceCloudId(new AdobeCallback<String>() {
+                    @Override
+                    public void call(String experienceCloudId) {
+                        callbackContext.success(experienceCloudId);
+                    }
+                });
+            }
+        });
     }
 
     private void extensionVersionMonitor(final CallbackContext callbackContext) {

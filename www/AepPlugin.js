@@ -56,6 +56,10 @@ var AEP = (function () {
 		return cordova.exec(success, fail, "AEPMobile_PhoneGap", "setPrivacyStatus", [privacyStatus]);
 	};
 
+	AEP.getExperienceCloudId = function (success, fail) {
+		return cordova.exec(success, fail, "AEPMobile_PhoneGap", "getExperienceCloudId", []);
+	};
+
 	AEP.getLifetimeValue = function(success, fail) {
 		return cordova.exec(success, fail, "AEPMobile_PhoneGap", "getLifetimeValue", []);
 	};

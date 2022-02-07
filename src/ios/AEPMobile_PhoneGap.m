@@ -426,6 +426,16 @@ static BOOL checkArgsWithTypes(NSArray* arguments, NSArray* types) {
     }];
 }
 
+- (void) getExperienceCloudId:(CDVInvokedUrlCommand*)command {
+    [self.commandDelegate runInBackground:^{
+        [ACPIdentity getExperienceCloudId:^(NSString * _Nullable experienceCloudId) {
+            CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:experienceCloudId];
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+        }];
+    }];
+}
+
+
 - (void)processGeofence:(CDVInvokedUrlCommand*)command
 {
     [self.commandDelegate runInBackground:^{
