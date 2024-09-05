@@ -101,14 +101,6 @@
                 <pod name="ACPPlaces" spec=">= 1.4.0" />
             </pods>
         </podspec>
-        <podspec>
-            <config>
-                <source url="https://github.com/CocoaPods/Specs.git" />
-            </config>
-            <pods use-frameworks="true">
-                <pod name="ACPPlacesMonitor" spec=">= 2.1.4" />
-            </pods>
-        </podspec>
         <config-file parent="/*" target="config.xml">
             <feature name="AEPMobile_PhoneGap">
                 <param name="ios-package" value="AEPMobile_PhoneGap" />
