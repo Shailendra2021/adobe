@@ -30,7 +30,6 @@
 #import <ACPCampaign/ACPCampaign.h>
 #import <ACPTarget/ACPTargetRequestObject.h>
 #import <ACPTarget/ACPTargetPrefetchObject.h>
-#import <ACPPlacesMonitor/ACPPlacesMonitor.h>
 #import <ACPPlaces/ACPPlaces.h>
 #import <ACPCore/ACPIdentity.h>
 #define STRING [NSString class]
@@ -78,7 +77,6 @@ static NSString * const EMPTY_ARRAY_STRING = @"[]";
     [ACPTarget registerExtension];
     [ACPCampaign registerExtension];
     [ACPPlaces registerExtension];
-    [ACPPlacesMonitor registerExtension];
     const UIApplicationState appState = [[UIApplication sharedApplication] applicationState];
     [ACPCore start:^{
      [ACPCore updateConfiguration:@{@"places.membershipttl":@(30)}];
@@ -287,27 +285,6 @@ static BOOL checkArgsWithTypes(NSArray* arguments, NSArray* types) {
     }];
 }
 
-
-- (void)setRequestLocationPermission:(CDVInvokedUrlCommand*)command
-{
-    [self.commandDelegate runInBackground:^{
-        ACPPlacesMonitorRequestAuthorizationLevel authorizationLevel = [self convertToAuthorizationLevel:[self getCommandArg:command.arguments[0]]];
-        [ACPPlacesMonitor setRequestAuthorizationLevel:authorizationLevel];
-        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-    }];
-}
-
-- (void)setPlacesMonitorMode:(CDVInvokedUrlCommand*)command
-{
-    [self.commandDelegate runInBackground:^{
-        ACPPlacesMonitorMode mode = [self convertToMonitorMode:[self getCommandArg:command.arguments[0]]];
-        [ACPPlacesMonitor setPlacesMonitorMode:mode];
-        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-    }];
-}
-
 - (void)getNearbyPointsOfInterest:(CDVInvokedUrlCommand*)command
 {
     [self.commandDelegate runInBackground:^{
@@ -389,22 +366,6 @@ static BOOL checkArgsWithTypes(NSArray* arguments, NSArray* types) {
 
 - (id) getCommandArg:(id) argument {
     return argument == (id)[NSNull null] ? nil : argument;
-}
-
-- (ACPPlacesMonitorRequestAuthorizationLevel) convertToAuthorizationLevel:(NSNumber*) authorization {
-    if(authorization.integerValue == 1){
-        return ACPPlacesRequestMonitorAuthorizationLevelAlways;
-    } else {
-        return ACPPlacesMonitorRequestAuthorizationLevelWhenInUse;
-    }
-}
-
-- (ACPPlacesMonitorMode) convertToMonitorMode:(NSNumber*) monitorMode {
-    if(monitorMode.integerValue == 1){
-        return ACPPlacesMonitorModeSignificantChanges;
-    } else {
-        return ACPPlacesMonitorModeContinuous;
-    }
 }
 
 - (void)clear:(CDVInvokedUrlCommand*)command
@@ -492,34 +453,6 @@ static BOOL checkArgsWithTypes(NSArray* arguments, NSArray* types) {
         return kCLAuthorizationStatusAuthorizedWhenInUse;
         break;
     }
-}
-
-
-- (void)start:(CDVInvokedUrlCommand*)command
-{
-    [self.commandDelegate runInBackground:^{
-        [ACPPlacesMonitor start];
-        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-    }];
-}
-
-- (void)stop:(CDVInvokedUrlCommand*)command
-{
-    [self.commandDelegate runInBackground:^{
-        [ACPPlacesMonitor stop:true];
-        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-    }];
-}
-
-- (void)updateLocation:(CDVInvokedUrlCommand*)command
-{
-    [self.commandDelegate runInBackground:^{
-        [ACPPlacesMonitor updateLocationNow];
-        CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
-        [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-    }];
 }
 
 - (void) getSdkIdentities:(CDVInvokedUrlCommand*)command {
