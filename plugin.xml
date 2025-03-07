@@ -27,15 +27,14 @@
             </feature>
         </config-file>
 
-        <preference name="AEP_VERSION" default="1.+" />
-        <framework src="com.adobe.marketing.mobile:userprofile:$AEP_VERSION" />
-        <framework src="com.adobe.marketing.mobile:campaign:$AEP_VERSION" />
-        <framework src="com.adobe.marketing.mobile:sdk-core:$AEP_VERSION" />
-        <framework src="com.adobe.marketing.mobile:target:$AEP_VERSION" />
-        <framework src="com.adobe.marketing.mobile:analytics:$AEP_VERSION" />
-        <framework src="com.adobe.marketing.mobile:places:$AEP_VERSION" />
-        <framework src="com.adobe.marketing.mobile:places-monitor:2.+" />
-        <framework src="com.google.android.gms:play-services-location:16.0.0" />
+        <framework src="com.adobe.marketing.mobile:userprofile" />
+        <framework src="com.adobe.marketing.mobile:campaign" />
+        <framework src="com.adobe.marketing.mobile:sdk-core" />
+        <framework src="com.adobe.marketing.mobile:target" />
+        <framework src="com.adobe.marketing.mobile:analytics" />
+        <framework src="com.adobe.marketing.mobile:places" />
+        <framework src="com.adobe.marketing.mobile:places-monitor" />
+        <framework src="com.google.android.gms:play-services-location" />
 
         <config-file target="AndroidManifest.xml" parent="/manifest">
             <uses-permission android:name="android.permission.INTERNET" />
@@ -58,7 +57,7 @@
                 <source url="https://github.com/CocoaPods/Specs.git" />
             </config>
             <pods use-frameworks="true">
-                <pod name="ACPUserProfile" spec="~> 2.1" />
+                <pod name="AEPAnalytics" />
             </pods>
         </podspec>
         <podspec>
@@ -66,7 +65,7 @@
                 <source url="https://github.com/CocoaPods/Specs.git" />
             </config>
             <pods use-frameworks="true">
-                <pod name="ACPCore" spec="~> 2.6" />
+                <pod name="AEPCore" />
             </pods>
         </podspec>
         <podspec>
@@ -74,7 +73,7 @@
                 <source url="https://github.com/CocoaPods/Specs.git" />
             </config>
             <pods use-frameworks="true">
-                <pod name="ACPAnalytics" spec="~> 2.2" />
+                <pod name="AEPAnalytics" />
             </pods>
         </podspec>
         <podspec>
@@ -82,7 +81,7 @@
                 <source url="https://github.com/CocoaPods/Specs.git" />
             </config>
             <pods use-frameworks="true">
-                <pod name="ACPCampaign" spec="~> 1.0" />
+                <pod name="AEPCampaign" />
             </pods>
         </podspec>
         <podspec>
@@ -98,7 +97,7 @@
                 <source url="https://github.com/CocoaPods/Specs.git" />
             </config>
             <pods use-frameworks="true">
-                <pod name="ACPPlaces" spec=">= 1.4.0" />
+                <pod name="AEPPlaces" />
             </pods>
         </podspec>
         <config-file parent="/*" target="config.xml">
