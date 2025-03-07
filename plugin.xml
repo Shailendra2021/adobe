@@ -132,6 +132,14 @@
                 <pod name="AEPSignal" />
             </pods>
         </podspec>
+        <podspec>
+            <config>
+                <source url="https://github.com/CocoaPods/Specs.git" />
+            </config>
+            <pods use-frameworks="true">
+                <pod name="AEPUserProfile" />
+            </pods>
+        </podspec>
         
         <config-file parent="/*" target="config.xml">
             <feature name="AEPMobile_PhoneGap">
