@@ -65,7 +65,7 @@ static NSString * const EMPTY_ARRAY_STRING = @"[]";
      environmentID = [self.commandDelegate.settings objectForKey:[@"environmentIDValue" lowercaseString]];
     [AEPMobileCore configureWithAppId:environmentID];
     [AEPMobileCore registerExtensions:@[AEPMobilePlaces.class] completion:nil];
-//    [AEPMobileCore registerExtensions:@[ACPUserProfile.class] completion:nil];
+    [AEPMobileCore registerExtensions:@[ACPUserProfile.class] completion:nil];
     [AEPMobileCore registerExtensions:@[AEPMobileIdentity.class] completion:nil];
     [AEPMobileCore registerExtensions:@[AEPMobileIdentity.class] completion:nil];
     [AEPMobileCore registerExtensions:@[AEPMobileLifecycle.class] completion:nil];
