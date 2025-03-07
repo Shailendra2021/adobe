@@ -28,6 +28,7 @@
 @import AEPTarget;
 @import AEPCampaign;
 @import AEPPlaces;
+@import AEPUserProfile;
 #define STRING [NSString class]
 #define NUMBER [NSNumber class]
 #define DICTIONARY [NSDictionary class]
@@ -65,8 +66,7 @@ static NSString * const EMPTY_ARRAY_STRING = @"[]";
      environmentID = [self.commandDelegate.settings objectForKey:[@"environmentIDValue" lowercaseString]];
     [AEPMobileCore configureWithAppId:environmentID];
     [AEPMobileCore registerExtensions:@[AEPMobilePlaces.class] completion:nil];
-    [AEPMobileCore registerExtensions:@[ACPUserProfile.class] completion:nil];
-    [AEPMobileCore registerExtensions:@[AEPMobileIdentity.class] completion:nil];
+    [AEPMobileCore registerExtensions:@[AEPMobileUserProfile.class] completion:nil];
     [AEPMobileCore registerExtensions:@[AEPMobileIdentity.class] completion:nil];
     [AEPMobileCore registerExtensions:@[AEPMobileLifecycle.class] completion:nil];
     [AEPMobileCore registerExtensions:@[AEPMobileSignal.class] completion:nil];
