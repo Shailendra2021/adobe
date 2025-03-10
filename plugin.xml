@@ -27,14 +27,14 @@
             </feature>
         </config-file>
 
-        <framework src="com.adobe.marketing.mobile:userprofile" />
-        <framework src="com.adobe.marketing.mobile:campaign" />
-        <framework src="com.adobe.marketing.mobile:sdk-core" />
-        <framework src="com.adobe.marketing.mobile:target" />
-        <framework src="com.adobe.marketing.mobile:analytics" />
-        <framework src="com.adobe.marketing.mobile:places" />
-        <framework src="com.adobe.marketing.mobile:places-monitor" />
-        <framework src="com.google.android.gms:play-services-location" />
+        <framework src="com.adobe.marketing.mobile:userprofile:3.+" />
+        <framework src="com.adobe.marketing.mobile:campaign:3.+" />
+        <framework src="com.adobe.marketing.mobile:sdk-core:3.+" />
+        <framework src="com.adobe.marketing.mobile:target:3.+" />
+        <framework src="com.adobe.marketing.mobile:analytics:3.+" />
+        <framework src="com.adobe.marketing.mobile:places:3.+" />
+        <framework src="com.adobe.marketing.mobile:places-monitor:3.+" />
+        <framework src="com.google.android.gms:play-services-location:21.1.0" />
 
         <config-file target="AndroidManifest.xml" parent="/manifest">
             <uses-permission android:name="android.permission.INTERNET" />
