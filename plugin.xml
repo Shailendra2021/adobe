@@ -27,13 +27,15 @@
             </feature>
         </config-file>
 
+        <framework src="com.adobe.marketing.mobile:core:3.+" />
+        <framework src="com.adobe.marketing.mobile:lifecycle:3.+" />
+        <framework src="com.adobe.marketing.mobile:identity:3.+" />
+        <framework src="com.adobe.marketing.mobile:signal:3.+" />
         <framework src="com.adobe.marketing.mobile:userprofile:3.+" />
         <framework src="com.adobe.marketing.mobile:campaign:3.+" />
-        <framework src="com.adobe.marketing.mobile:sdk-core:3.+" />
         <framework src="com.adobe.marketing.mobile:target:3.+" />
         <framework src="com.adobe.marketing.mobile:analytics:3.+" />
         <framework src="com.adobe.marketing.mobile:places:3.+" />
-        <framework src="com.adobe.marketing.mobile:places-monitor:3.+" />
         <framework src="com.google.android.gms:play-services-location:21.1.0" />
 
         <config-file target="AndroidManifest.xml" parent="/manifest">
