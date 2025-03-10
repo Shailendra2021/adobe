@@ -5,24 +5,24 @@ import org.apache.cordova.LOG;
 import com.adobe.marketing.mobile.AdobeCallback;
 import com.adobe.marketing.mobile.Analytics;
 import com.adobe.marketing.mobile.Campaign;
+import com.adobe.marketing.mobile.Extension;
 import com.adobe.marketing.mobile.Identity;
-import com.adobe.marketing.mobile.InvalidInitException;
 import com.adobe.marketing.mobile.Lifecycle;
 import com.adobe.marketing.mobile.LoggingMode;
 import com.adobe.marketing.mobile.MobileCore;
 import com.adobe.marketing.mobile.Places;
-import com.adobe.marketing.mobile.PlacesMonitor;
-import com.adobe.marketing.mobile.PlacesPOI;
 import com.adobe.marketing.mobile.Signal;
 import com.adobe.marketing.mobile.Target;
-import com.adobe.marketing.mobile.TargetParameters;
-import com.adobe.marketing.mobile.TargetRequest;
-import com.adobe.marketing.mobile.PlacesAuthorizationStatus;
-import com.adobe.marketing.mobile.PlacesRequestError;
 import com.adobe.marketing.mobile.VisitorID;
 import java.util.List;
 import java.util.Iterator;
 import java.util.HashMap;
+
+import com.adobe.marketing.mobile.places.PlacesAuthorizationStatus;
+import com.adobe.marketing.mobile.places.PlacesPOI;
+import com.adobe.marketing.mobile.places.PlacesRequestError;
+import com.adobe.marketing.mobile.target.TargetParameters;
+import com.adobe.marketing.mobile.target.TargetRequest;
 import com.google.android.gms.location.Geofence;
 import com.adobe.marketing.mobile.UserProfile;
 
@@ -68,9 +68,6 @@ public class AEPMobile_PhoneGap extends CordovaPlugin {
 
     String applicationCode;
     final static String METHOD_PLACESMONITOR_EXTENSION_VERSION_PLACESMONITOR = "extensionVersionMonitor";
-    final static String METHOD_PLACESMONITOR_START = "start";
-    final static String METHOD_PLACESMONITOR_STOP = "stop";
-    final static String METHOD_PLACESMONITOR_UPDATE_LOCATION = "updateLocation";
     final static String METHOD_PLACESMONITOR_SET_PLACES_MONITOR_MODE = "setPlacesMonitorMode";
     final static String METHOD_PLACES_CLEAR = "clear";
     final static String METHOD_PLACES_EXTENSION_VERSION_PLACES = "extensionVersionPlaces";
@@ -242,22 +239,7 @@ public class AEPMobile_PhoneGap extends CordovaPlugin {
         }else if (action.equals("initializeAppAdobe")) {
           //     this.initializeAppAdobe(args,callbackContext);
             return true;
-        }else if (METHOD_PLACESMONITOR_SET_PLACES_MONITOR_MODE.equals(action)) {
-            setPlacesMonitorMode(callbackContext);
-            return true;
-        }else if (METHOD_PLACESMONITOR_EXTENSION_VERSION_PLACESMONITOR.equals(action)) {
-            extensionVersionMonitor(callbackContext);
-            return true;
-        } else if (METHOD_PLACESMONITOR_START.equals(action)) {
-            start(callbackContext);
-            return true;
-        } else if (METHOD_PLACESMONITOR_STOP.equals(action)) {
-            stop(args, callbackContext);
-            return true;
-        }else if (METHOD_PLACESMONITOR_UPDATE_LOCATION.equals(action)) {
-            updateLocation(callbackContext);
-            return true;
-        }else if (METHOD_PLACES_CLEAR.equals(action)) {
+        } else if (METHOD_PLACES_CLEAR.equals(action)) {
             clear(callbackContext);
             return true;
         } else if (METHOD_PLACES_EXTENSION_VERSION_PLACES.equals((action))) {
@@ -301,7 +283,7 @@ public class AEPMobile_PhoneGap extends CordovaPlugin {
         return false;
     }
 
-   
+
 
 
     private void trackState(final JSONArray args, final CallbackContext callbackContext) {
@@ -315,7 +297,7 @@ public class AEPMobile_PhoneGap extends CordovaPlugin {
                     if (!args.get(0).equals(null) && args.get(0).getClass() == String.class) {
                         state = args.getString(0);
                     } else if (!args.get(0).equals(null)) {
-                        
+
                     }
                     if (!args.get(1).equals(null)) {
                         JSONObject cDataJSON = args.getJSONObject(1);
@@ -334,7 +316,7 @@ public class AEPMobile_PhoneGap extends CordovaPlugin {
                 } else {
                     callbackContext.error("Parameter not sent in correct format");
                 }
-               
+
             }
         });
     }
@@ -418,9 +400,9 @@ public class AEPMobile_PhoneGap extends CordovaPlugin {
         }));
 
     }
-    
-    
-    
+
+
+
 
 
       private void targetLoadRequest(final JSONArray args, final CallbackContext callbackContext) throws JSONException {
@@ -429,7 +411,7 @@ public class AEPMobile_PhoneGap extends CordovaPlugin {
             cordova.getThreadPool().execute(new Runnable() {
             @Override
             public void run() {
-                
+
                 Map<String, String> mboxParameters1 = new HashMap<>();
 
                 TargetParameters parameters1 = new TargetParameters.Builder().parameters(mboxParameters1).build();
@@ -470,40 +452,6 @@ public class AEPMobile_PhoneGap extends CordovaPlugin {
                         callbackContext.success(experienceCloudId);
                     }
                 });
-            }
-        });
-    }
-
-    private void extensionVersionMonitor(final CallbackContext callbackContext) {
-        cordova.getThreadPool().execute(new Runnable() {
-            @Override
-            public void run() {
-                String extensionVersion = PlacesMonitor.extensionVersion();
-                if (extensionVersion.length() > 0) {
-                    callbackContext.success(extensionVersion);
-                } else {
-                    callbackContext.error("Extension version is null or empty");
-                }
-            }
-        });
-    }
-
-    private void start(final CallbackContext callbackContext) {
-        cordova.getThreadPool().execute(new Runnable() {
-            @Override
-            public void run() {
-                PlacesMonitor.start();
-                callbackContext.success();
-            }
-        });
-    }
-
-    private void stop(final JSONArray args, final CallbackContext callbackContext) {
-        cordova.getThreadPool().execute(new Runnable() {
-            @Override
-            public void run() {
-                PlacesMonitor.stop(true);
-                callbackContext.success();
             }
         });
     }
@@ -569,25 +517,6 @@ public class AEPMobile_PhoneGap extends CordovaPlugin {
             }
         });
     }
-
-
-
-    private void updateLocation(final CallbackContext callbackContext) {
-        cordova.getThreadPool().execute(new Runnable() {
-            @Override
-            public void run() {
-                PlacesMonitor.updateLocation();
-                callbackContext.success();
-            }
-        });
-    }
-
-
-
-
-
-
-
     private void clear(final CallbackContext callbackContext) {
         cordova.getThreadPool().execute(new Runnable() {
             @Override
@@ -749,18 +678,6 @@ public class AEPMobile_PhoneGap extends CordovaPlugin {
     }
 
 
-
-    private void setPlacesMonitorMode(final CallbackContext callbackContext) {
-        cordova.getThreadPool().execute(new Runnable() {
-            @Override
-            public void run() {
-                // TODO: this method is not implemented in Android
-                callbackContext.success();
-            }
-        });
-    }
-
-
     // =====================
     // Helpers
     // =====================
@@ -898,7 +815,7 @@ public class AEPMobile_PhoneGap extends CordovaPlugin {
                 HashMap<String, Object> contextData = new HashMap<>();
 
                 if (deliveryId != null && broadlogId != null) {
-                
+
                     contextData.put("deliveryId", deliveryId);
                     contextData.put("broadlogId", broadlogId);
 
@@ -914,33 +831,6 @@ public class AEPMobile_PhoneGap extends CordovaPlugin {
             }
         });
     }
-
-
-//
-//    private JSONArray visitorGetIDsJSONArray() {
-//        ArrayList<Object> visitoIDsJson = new ArrayList<Object>();
-//        JSONArray visitorIDSJSONArray = null;
-//
-//        try {
-//            ArrayList<VisitorID> visitorIDs = (ArrayList<VisitorID>) Visitor.getIdentifiers();
-//            if (visitorIDs != null && visitorIDs.size() > 0){
-//                for (VisitorID vID:visitorIDs){
-//                    HashMap<Object,Object> vIDMap = new HashMap<Object, Object>();
-//                    vIDMap.put("idType", (vID.idType != null) ? vID.idType : "");
-//                    vIDMap.put("id", (vID.id != null) ? vID.id : "");
-//                    vIDMap.put("authenticationState", vID.authenticationState.toString());
-//                    visitoIDsJson.add(vIDMap);
-//                }
-//
-//                visitorIDSJSONArray = new JSONArray(visitoIDsJson);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        return visitorIDSJSONArray;
-//    }
-//
     // =====================
     // Plugin life cycle events
     // =====================
@@ -949,38 +839,31 @@ public class AEPMobile_PhoneGap extends CordovaPlugin {
         super.initialize(cordova, webView);
 
         MobileCore.setApplication(cordova.getActivity().getApplication());
-        MobileCore.setLogLevel(LoggingMode.DEBUG);
         applicationCode = preferences.getString("environmentIDValue", "0b11157d649c/a5066337cdf1/launch-50f50af43544-development");
         try {
-            UserProfile.registerExtension();
-            Identity.registerExtension();
-            Lifecycle.registerExtension();
-            Signal.registerExtension();
-            Campaign.registerExtension();
-            Analytics.registerExtension();
-            Target.registerExtension();
-            PlacesMonitor.registerExtension(); //Register PlacesMonitor with Mobile Core
-            Places.registerExtension(); //Register Places with Mobile Core
-            if (applicationCode != null) {
-//                MobileCore.start(o -> MobileCore.configureWithAppID(applicationCode));
-                MobileCore.start(new AdobeCallback() {
-                    @Override
-                    public void call(Object o) {
-                        // switch to your App ID from Launch
-                        MobileCore.configureWithAppID(applicationCode);
+          List<Class<? extends Extension>> extensions = new ArrayList<>();
+          extensions.add(UserProfile.EXTENSION);
+          extensions.add(Identity.EXTENSION);
+          extensions.add(Lifecycle.EXTENSION);
+          extensions.add(Signal.EXTENSION);
+          extensions.add(Campaign.EXTENSION);
+          extensions.add(Analytics.EXTENSION);
+          extensions.add(Target.EXTENSION);
+          extensions.add(Places.EXTENSION);
+          if (applicationCode != null) {
+            MobileCore.registerExtensions(extensions, o -> {
+              LOG.d(LOG_TAG, "AEP Mobile SDK initialized!!");
+              MobileCore.configureWithAppID(applicationCode);
+              final Map<String, Object> config = new HashMap<>();
+              config.put("places.membershipttl", 30);
+              MobileCore.updateConfiguration(config);
 
-                        final Map<String, Object> config = new HashMap<>();
-                        config.put("places.membershipttl", 30);
-                        MobileCore.updateConfiguration(config);
-
-                        MobileCore.lifecycleStart(null);
-                    }
-                });
-
-
-            }
-        } catch (InvalidInitException e) {
-
+              MobileCore.lifecycleStart(null);
+            });
+          }
+        } catch (Exception e) {
+          LOG.e(LOG_TAG, "AEP Mobile SDK Init Error:: " + e.getMessage());
+          e.printStackTrace();
         }
 
 
