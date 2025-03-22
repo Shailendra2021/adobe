@@ -20,18 +20,15 @@
 #import <CoreLocation/CoreLocation.h>
 #import "AEPMobile_PhoneGap.h"
 #import "AppDelegate.h"
-#import <ACPCore/ACPCore.h>
-#import <ACPUserProfile/ACPUserProfile.h>
-#import <ACPCore/ACPLifecycle.h>
-#import <ACPCore/ACPSignal.h>
-//#import "ACPSignal.h"
-#import <ACPAnalytics/ACPAnalytics.h>
-#import <ACPTarget/ACPTarget.h>
-#import <ACPCampaign/ACPCampaign.h>
-#import <ACPTarget/ACPTargetRequestObject.h>
-#import <ACPTarget/ACPTargetPrefetchObject.h>
-#import <ACPPlaces/ACPPlaces.h>
-#import <ACPCore/ACPIdentity.h>
+@import AEPCore;
+@import AEPLifecycle;
+@import AEPSignal;
+@import AEPIdentity;
+@import AEPAnalytics;
+@import AEPTarget;
+@import AEPCampaign;
+@import AEPPlaces;
+@import AEPUserProfile;
 #define STRING [NSString class]
 #define NUMBER [NSNumber class]
 #define DICTIONARY [NSDictionary class]
@@ -67,24 +64,18 @@ static NSString * const EMPTY_ARRAY_STRING = @"[]";
 - (void)pluginInitialize {
     [super pluginInitialize];
      environmentID = [self.commandDelegate.settings objectForKey:[@"environmentIDValue" lowercaseString]];
-    [ACPCore setLogLevel:ACPMobileLogLevelDebug];
-    [ACPCore configureWithAppId:environmentID];
-    [ACPUserProfile registerExtension];
-    [ACPIdentity registerExtension];
-    [ACPLifecycle registerExtension];
-    [ACPSignal registerExtension];
-    [ACPAnalytics registerExtension];
-    [ACPTarget registerExtension];
-    [ACPCampaign registerExtension];
-    [ACPPlaces registerExtension];
-    const UIApplicationState appState = [[UIApplication sharedApplication] applicationState];
-    [ACPCore start:^{
-     [ACPCore updateConfiguration:@{@"places.membershipttl":@(30)}];
-        // only start lifecycle if the application is not in the background
-        if (appState != UIApplicationStateBackground) {
-            [ACPCore lifecycleStart:nil];
-        }
-    }];
+    [AEPMobileCore configureWithAppId:environmentID];
+    [AEPMobileCore registerExtensions:@[AEPMobilePlaces.class] completion:nil];
+    [AEPMobileCore registerExtensions:@[AEPMobileUserProfile.class] completion:nil];
+    [AEPMobileCore registerExtensions:@[AEPMobileIdentity.class] completion:nil];
+    [AEPMobileCore registerExtensions:@[AEPMobileLifecycle.class] completion:nil];
+    [AEPMobileCore registerExtensions:@[AEPMobileSignal.class] completion:nil];
+    [AEPMobileCore registerExtensions:@[AEPMobileAnalytics.class] completion:nil];
+    [AEPMobileCore registerExtensions:@[AEPMobileTarget.class] completion:nil];
+    [AEPMobileCore registerExtensions:@[AEPMobileCampaign.class] completion:nil];
+    [AEPMobileCore registerExtensions:@[AEPMobileCampaign.class] completion:nil];
+    [AEPMobileCore updateConfiguration:@{@"places.membershipttl":@(30)}];
+    [AEPMobileCore lifecycleStart:nil];
     
     //Become Active Notification
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
@@ -101,12 +92,12 @@ static NSString * const EMPTY_ARRAY_STRING = @"[]";
 
 - (void)appWillEnterForeground:(NSNotification *)notification {
     NSLog(@"will enter foreground notification");
-     [ACPCore lifecycleStart:nil];
+     [AEPMobileCore lifecycleStart:nil];
 }
 
 - (void)appDidEnterBackground:(NSNotification *)notification {
     NSLog(@"Application enter background");
-     [ACPCore lifecyclePause];
+     [AEPMobileCore lifecyclePause];
 }
 
 - (void)trackState:(CDVInvokedUrlCommand*)command {
@@ -123,10 +114,10 @@ static NSString * const EMPTY_ARRAY_STRING = @"[]";
 
         //allows the ADB.trackState(cData) call
         if([firstArg isKindOfClass:DICTIONARY]) {
-             [ACPCore trackState:nil data:firstArg];
+             [AEPMobileCore trackState:nil data:firstArg];
         }
         else {
-             [ACPCore trackState:firstArg data:secondArg];
+             [AEPMobileCore trackState:firstArg data:secondArg];
         }
 
         [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
@@ -150,11 +141,11 @@ static NSString * const EMPTY_ARRAY_STRING = @"[]";
         //allows the ADB.trackAction(cData) call
         if([firstArg isKindOfClass:DICTIONARY]) {
             NSLog(@"Track Action with dictionary !!");
-             [ACPCore trackAction:nil data:firstArg];
+             [AEPMobileCore trackAction:nil data:firstArg];
         }
         else {
             NSLog(@"Track Action without dictionary !!");
-             [ACPCore trackAction:firstArg data:secondArg];
+             [AEPMobileCore trackAction:firstArg data:secondArg];
         }
 
         [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
@@ -215,7 +206,7 @@ static BOOL checkArgsWithTypes(NSArray* arguments, NSArray* types) {
             pushIdentifier = [NSData dataWithBytesNoCopy:bytes length:[pushIdStr length]/2 freeWhenDone:YES];
         }
 
-        [ACPCore setPushIdentifier:pushIdentifier];
+        [AEPMobileCore setPushIdentifier:pushIdentifier];
 
         [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_OK] callbackId:command.callbackId];
     }];
@@ -232,7 +223,7 @@ static BOOL checkArgsWithTypes(NSArray* arguments, NSArray* types) {
 
         NSDictionary *piiData = command.arguments[0];
         //ToDo(Prerna): test for individual fields data type
-        [ACPCore collectPii:piiData];
+        [AEPMobileCore collectPii:piiData];
         CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:@"Collecting Pii"];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }];
@@ -254,34 +245,19 @@ static BOOL checkArgsWithTypes(NSArray* arguments, NSArray* types) {
         
 
 
-        ACPTargetParameters *params1 = [ACPTargetParameters targetParametersWithParameters:nil
-                                                            profileParameters:nil
-                                                                      product:nil
-                                                                        order:nil];
-        ACPTargetRequestObject *request1 = [ACPTargetRequestObject targetRequestObjectWithName:name targetParameters:params1
-        defaultContent:@"defaultContent1" callback:^(NSString * _Nullable content) {
-            // do something with the received content
-                       CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:content];
-                       [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-          }];
+      AEPTargetParameters *params1 = [[AEPTargetParameters alloc] initWithParameters:nil profileParameters:nil order:nil product:nil];
+      AEPTargetRequestObject *request1 = [[AEPTargetRequestObject alloc] initWithMboxName: name defaultContent: @"defaultContent1" targetParameters: params1 contentWithDataCallback:^(NSString * _Nullable content, NSDictionary<NSString *,id> * _Nullable data) {
+          CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:content];
+          [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
+      }];
 
         
         // Create request object array
         NSArray *requestArray = @[request1];
-        ACPTargetParameters *targetParameters = [ACPTargetParameters targetParametersWithParameters:nil
-                                                            profileParameters:nil
-                                                                      product:nil
-                                                                        order:nil];
+        AEPTargetParameters *targetParameters = [[AEPTargetParameters alloc] initWithParameters:nil profileParameters:nil order:nil product:nil];
 
         // Call the API
-        [ACPTarget retrieveLocationContent:requestArray withParameters:targetParameters];
-        
-        
-        
-        
-        
-       
-        
+        [AEPMobileTarget retrieveLocationContent:requestArray withParameters:targetParameters];
     }];
 }
 
@@ -295,12 +271,13 @@ static BOOL checkArgsWithTypes(NSArray* arguments, NSArray* types) {
         NSUInteger limit = [[self getCommandArg:command.arguments[1]] integerValue];
         __block NSString* currentPoisString = EMPTY_ARRAY_STRING;
         dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-        [ACPPlaces getNearbyPointsOfInterest:currentLocation limit:limit callback:^(NSArray<ACPPlacesPoi *> * _Nullable retrievedPois) {
-                currentPoisString = [self generatePOIString:retrievedPois];
-                dispatch_semaphore_signal(semaphore);
-            }
-                errorCallback:^(ACPPlacesRequestError error) {
-            [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:[NSString stringWithFormat:@"Places request error code: %lu", error]] callbackId:command.callbackId];
+        [AEPMobilePlaces getNearbyPointsOfInterest:currentLocation limit:limit callback:^(NSArray<AEPPlacesPoi *> * _Nullable retrievedPois, AEPPlacesQueryResponseCode responseCode) {
+          if (responseCode == AEPPlacesQueryResponseCodeOk){
+            currentPoisString = [self generatePOIString:retrievedPois];
+            dispatch_semaphore_signal(semaphore);
+          } else {
+            [self.commandDelegate sendPluginResult:[CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:[NSString stringWithFormat:@"Places request error code: %lu", responseCode]] callbackId:command.callbackId];
+          }
         }];
         dispatch_semaphore_wait(semaphore, dispatch_time(DISPATCH_TIME_NOW, ((int64_t)1 * NSEC_PER_SEC)));
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:currentPoisString];
@@ -309,12 +286,12 @@ static BOOL checkArgsWithTypes(NSArray* arguments, NSArray* types) {
 }
 
 
-- (NSString*) generatePOIString:(NSArray<ACPPlacesPoi *> *) retrievedPois {
+- (NSString*) generatePOIString:(NSArray<AEPPlacesPoi *> *) retrievedPois {
     NSMutableArray* retrievedPoisArray = [[NSMutableArray alloc]init];
     if(retrievedPois != nil && retrievedPois.count != 0) {
         for (int index = 0; index < retrievedPois.count; index++) {
             NSMutableDictionary* tempDict = [[NSMutableDictionary alloc]init];
-            ACPPlacesPoi* currentPoi = retrievedPois[index];
+            AEPPlacesPoi* currentPoi = retrievedPois[index];
             [tempDict setValue:currentPoi.name forKey:POI];
             [tempDict setValue:[NSNumber numberWithDouble:currentPoi.latitude] forKey:LATITUDE];
             [tempDict setValue:[NSNumber numberWithDouble:currentPoi.longitude] forKey:LONGITUDE];
@@ -332,11 +309,11 @@ static BOOL checkArgsWithTypes(NSArray* arguments, NSArray* types) {
     [self.commandDelegate runInBackground:^{
         __block NSString* currentPoisString = EMPTY_ARRAY_STRING;
         dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-        [ACPPlaces getCurrentPointsOfInterest:^(NSArray<ACPPlacesPoi *> * _Nullable retrievedPois) {
-            if(retrievedPois != nil && retrievedPois.count != 0) {
-                currentPoisString = [self generatePOIString:retrievedPois];
-                dispatch_semaphore_signal(semaphore);
-            }
+        [AEPMobilePlaces getCurrentPointsOfInterest:^(NSArray<AEPPlacesPoi *> * _Nullable retrievedPois) {
+          if(retrievedPois != nil && retrievedPois.count != 0) {
+              currentPoisString = [self generatePOIString:retrievedPois];
+              dispatch_semaphore_signal(semaphore);
+          }
         }];
         dispatch_semaphore_wait(semaphore, dispatch_time(DISPATCH_TIME_NOW, ((int64_t)1 * NSEC_PER_SEC)));
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:currentPoisString];
@@ -348,7 +325,7 @@ static BOOL checkArgsWithTypes(NSArray* arguments, NSArray* types) {
 {
     [self.commandDelegate runInBackground:^{
         CDVPluginResult* pluginResult = nil;
-        NSString* extensionVersion = [ACPPlaces extensionVersion];
+      NSString* extensionVersion = [AEPMobilePlaces extensionVersion];
 
         if (extensionVersion != nil && [extensionVersion length] > 0) {
             pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:extensionVersion];
@@ -371,7 +348,7 @@ static BOOL checkArgsWithTypes(NSArray* arguments, NSArray* types) {
 - (void)clear:(CDVInvokedUrlCommand*)command
 {
     [self.commandDelegate runInBackground:^{
-        [ACPPlaces clear];
+      [AEPMobilePlaces clear];
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }];
@@ -379,7 +356,7 @@ static BOOL checkArgsWithTypes(NSArray* arguments, NSArray* types) {
 - (void)getLastKnownLocation:(CDVInvokedUrlCommand*)command
 {
     [self.commandDelegate runInBackground:^{
-        [ACPPlaces getLastKnownLocation:^(CLLocation * _Nullable lastLocation) {
+        [AEPMobilePlaces getLastKnownLocation:^(CLLocation * _Nullable lastLocation) {
             NSMutableDictionary* tempDict = [[NSMutableDictionary alloc]init];
             [tempDict setValue:[NSNumber numberWithDouble:lastLocation.coordinate.latitude] forKey:LATITUDE];
             [tempDict setValue:[NSNumber numberWithDouble:lastLocation.coordinate.longitude] forKey:LONGITUDE];
@@ -392,7 +369,7 @@ static BOOL checkArgsWithTypes(NSArray* arguments, NSArray* types) {
 
 - (void) getExperienceCloudId:(CDVInvokedUrlCommand*)command {
     [self.commandDelegate runInBackground:^{
-        [ACPIdentity getExperienceCloudId:^(NSString * _Nullable experienceCloudId) {
+      [AEPMobileIdentity getExperienceCloudId:^(NSString * _Nullable __strong experienceCloudId, NSError * _Nullable __strong error) {
             CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:experienceCloudId];
             [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
         }];
@@ -405,14 +382,14 @@ static BOOL checkArgsWithTypes(NSArray* arguments, NSArray* types) {
     [self.commandDelegate runInBackground:^{
         NSDictionary* geofenceDict = [self getCommandArg:command.arguments[0]];
         NSDictionary* regionDict = [geofenceDict valueForKey:CIRCULAR_REGION];
-        ACPRegionEventType eventType = [[self getCommandArg:command.arguments[1]] integerValue];
+        NSInteger *eventType = [[self getCommandArg:command.arguments[1]] integerValue];
         CLLocationDegrees latitude = [[regionDict valueForKey:LOWERCASE_LATITUDE] doubleValue];
         CLLocationDegrees longitude = [[regionDict valueForKey:LOWERCASE_LONGITUDE] doubleValue];
         CLLocationCoordinate2D center = CLLocationCoordinate2DMake(latitude,longitude);
         NSUInteger radius = [[regionDict valueForKey:RADIUS] integerValue];
-        NSString* identifier = [geofenceDict valueForKey:REQUEST_ID];
+        NSString *identifier = [geofenceDict valueForKey:REQUEST_ID];
         CLRegion* region = [[CLCircularRegion alloc] initWithCenter:center radius:radius identifier:identifier];
-        [ACPPlaces processRegionEvent:region forRegionEventType:eventType];
+        [AEPMobilePlaces processRegionEvent:eventType forRegion:region];
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }];
@@ -422,7 +399,7 @@ static BOOL checkArgsWithTypes(NSArray* arguments, NSArray* types) {
 {
     [self.commandDelegate runInBackground:^{
         int status = [[self getCommandArg:command.arguments[0]] integerValue];
-        [ACPPlaces setAuthorizationStatus:[self convertToCLAuthorizationStatus:status]];
+        [AEPMobilePlaces setAuthorizationStatus:[self convertToCLAuthorizationStatus:status]];
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
     }];
@@ -457,7 +434,7 @@ static BOOL checkArgsWithTypes(NSArray* arguments, NSArray* types) {
 
 - (void) getSdkIdentities:(CDVInvokedUrlCommand*)command {
     [self.commandDelegate runInBackground:^{
-        [ACPCore getSdkIdentities:^(NSString * _Nullable content) {
+      [AEPMobileCore getSdkIdentities:^(NSString * _Nullable content, NSError * _Nullable __strong err) {
             CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:content];
             [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
         }];
@@ -466,14 +443,14 @@ static BOOL checkArgsWithTypes(NSArray* arguments, NSArray* types) {
 
 - (void) getIdentifiers:(CDVInvokedUrlCommand*)command {
     [self.commandDelegate runInBackground:^{
-        [ACPIdentity getIdentifiers:^(NSArray<ACPMobileVisitorId *> * _Nullable visitorIDs) {
+      [AEPMobileIdentity getIdentifiers:^(NSArray<id<AEPIdentifiable>> * _Nullable visitorIDs, NSError * _Nullable __strong err) {
             NSString *visitorIdsString = @"";
             if (!visitorIDs) {
                 visitorIdsString = @"nil";
             } else if ([visitorIDs count] == 0) {
                 visitorIdsString = @"[]";
             } else {
-                for (ACPMobileVisitorId *visitorId in visitorIDs) {
+                for (NSArray<id<AEPIdentifiable>> *visitorId in visitorIDs) {
                     // visitorIdsString = [visitorIdsString stringByAppendingFormat:@"[Id: %@, Type: %@, Origin: %@, Authentication: %@] ", [visitorId identifier], [visitorId idType], [visitorId idOrigin], stateStrings[(unsigned long)[visitorId authenticationState]]];
                 }
             }
@@ -485,7 +462,7 @@ static BOOL checkArgsWithTypes(NSArray* arguments, NSArray* types) {
 
 - (void) getUrlVariables:(CDVInvokedUrlCommand*)command {
     [self.commandDelegate runInBackground:^{
-        [ACPIdentity getUrlVariables:^(NSString * _Nullable urlVariables) {
+        [AEPMobileIdentity getUrlVariables:^(NSString * _Nullable urlVariables, NSError * _Nullable __strong err) {
             CDVPluginResult *pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString:urlVariables];
             [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
         }];
@@ -507,13 +484,13 @@ static BOOL checkArgsWithTypes(NSArray* arguments, NSArray* types) {
 
         //allows the ADB.handleTracking() call
             // Send Click Tracking since the user did click on the notification
-        [ACPCore collectMessageInfo:@{
+        [AEPMobileCore collectMessageInfo:@{
                                        @"broadlogId" : secondArg,
                                        @"deliveryId": firstArg,
                                        @"action": @"2"
                                        }];
         // Send Open Tracking since the user opened the app
-        [ACPCore collectMessageInfo:@{
+        [AEPMobileCore collectMessageInfo:@{
                                        @"broadlogId" : secondArg,
                                        @"deliveryId": firstArg,
                                        @"action": @"1"
